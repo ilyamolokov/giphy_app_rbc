@@ -53,7 +53,7 @@ class HomePageState extends State<HomePage> {
           }
           _gifList = _gifList.reversed.toList(); // берем четыре последних элемента списка
           List _fourNew = [];
-          for (int i=0; i < 3; i++) {  // вместо четырех я взял три, чтобы предотвратить баги (например появление одной и той же гифки несколько раз)
+          for (int i=0; i < 2; i++) {  // вместо четырех я взял три, чтобы предотвратить баги (например появление одной и той же гифки несколько раз)
             _fourNew.add(_gifList[i]);
           }
           this.gifList += _fourNew.toSet().toList();
