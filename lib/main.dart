@@ -48,12 +48,12 @@ class HomePageState extends State<HomePage> {
         setState(() {
           var mapData = map['data'];
           List _gifList = [];
-          for (var i=0; i < mapData.length; i++) {
+          for (int i=0; i < mapData.length; i++) {
             _gifList.add(mapData[i]['images']['fixed_height']['url'].toString());
           }
           _gifList = _gifList.reversed.toList(); // берем четыре последних элемента списка
           List _fourNew = [];
-          for (var i=0; i < 3; i++) {  // вместо четырех я взял три, чтобы предотвратить баги (например появление одной и той же гифки несколько раз)
+          for (int i=0; i < 3; i++) {  // вместо четырех я взял три, чтобы предотвратить баги (например появление одной и той же гифки несколько раз)
             _fourNew.add(_gifList[i]);
           }
           this.gifList += _fourNew.toSet().toList();
@@ -63,7 +63,7 @@ class HomePageState extends State<HomePage> {
         setState(() {
           var mapData = map['data'];
           List _gifList = [];
-          for (var i=0; i < mapData.length; i++) {
+          for (int i=0; i < mapData.length; i++) {
             _gifList.add(mapData[i]['images']['fixed_height']['url'].toString());
           }
           this.gifList = _gifList.toSet().toList();
@@ -81,7 +81,7 @@ class HomePageState extends State<HomePage> {
   _textListener() {
     var customText = _myController.text.replaceAll(' ', '+');
     customText = customText.toLowerCase();
-    _timer = Timer(const Duration(milliseconds: 2000), () { // функция setState() срабатывает через 2 секунды после того как внесли изменения в _myController
+    _timer = Timer(const Duration(milliseconds: 2000), () { // функция setState() срабатывает через 2 секунды после того как изменился _myController.text
       setState(() {
         _numberOfGifs = 6;
         this.gifList = [];
@@ -146,7 +146,7 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget listOfGifs() {
-    return GridView.count( // Две наших колонки с гифками
+    return GridView.count( // Две колонки с гифками
           controller: _scrollController,
           crossAxisCount: 2,
           children: List.generate(this.gifList != null ? this.gifList.length : 0, 
