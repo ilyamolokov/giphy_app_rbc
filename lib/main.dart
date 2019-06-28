@@ -153,7 +153,7 @@ class HomePageState extends State<HomePage> {
            (index) {
             String gifUrl = gifList[index];
             return Stack(alignment: AlignmentDirectional.center, children: <Widget>[Container(child:Stack(alignment: AlignmentDirectional.topEnd, children: <Widget>[
-              Image.network(gifUrl),
+              FadeInImage.assetNetwork(placeholder:'assets/giphy.gif', image:gifUrl),
               ClipRRect(borderRadius: BorderRadius.circular(30.0),
                 child: Container(
                   width: 50.0,
