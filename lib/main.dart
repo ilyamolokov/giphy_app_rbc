@@ -47,9 +47,13 @@ class HomePageState extends State<HomePage> {
         var mapData = map['data'];
         List _gifList = [];
         for (int i=0; i < mapData.length; i++) {
-          _gifList.add(mapData[i]['images']['fixed_height']['url'].toString());
+          _gifList.add('https://media0.giphy.com/media/'+mapData[i]['id'].toString()+'/200.gif');
         }
-        this.gifList = _gifList.toSet().toList();
+        // for (int i=0; i < _gifList.length; i++) {
+        //   int mediaIndex = _gifList[i].indexOf('media');
+        //   _gifList[i] = _gifList[i].replaceRange(mediaIndex, mediaIndex+7, 'media0.');
+        // }
+        this.gifList = _gifList;//.toSet().toList();
       });
     } else {
       print('Failed to connect');
@@ -132,6 +136,9 @@ class HomePageState extends State<HomePage> {
         crossAxisCount: 2,
         children: List.generate(this.gifList != null ? this.gifList.length : 0, 
         (index) {
+          print('${gifList[index]} is favourite: ${favouriteGifsList.contains(gifList[index])}');
+          print('$favouriteGifsList');
+
           return Stack(alignment: AlignmentDirectional.center, children: <Widget>[Container(child:Stack(alignment: AlignmentDirectional.topEnd, children: <Widget>[
             FadeInImage.assetNetwork(placeholder:'assets/giphy.gif', image:gifList[index]),
             ClipRRect(borderRadius: BorderRadius.circular(30.0),
