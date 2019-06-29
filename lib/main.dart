@@ -43,32 +43,14 @@ class HomePageState extends State<HomePage> {
 
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
-
-      if (this.gifList.length >= 6) {
-        setState(() {
-          var mapData = map['data'];
-          List _gifList = [];
-          for (int i=0; i < mapData.length; i++) {
-            _gifList.add(mapData[i]['images']['fixed_height']['url'].toString());
-          }
-          _gifList = _gifList.reversed.toList(); // берем четыре последних элемента списка
-          List _fourNew = [];
-          for (int i=0; i < 2; i++) {  // вместо четырех я взял три, чтобы предотвратить баги (например появление одной и той же гифки несколько раз)
-            _fourNew.add(_gifList[i]);
-          }
-          this.gifList += _fourNew.toSet().toList();
-
-        });
-      } else if (this.gifList.length == 0) {
-        setState(() {
-          var mapData = map['data'];
-          List _gifList = [];
-          for (int i=0; i < mapData.length; i++) {
-            _gifList.add(mapData[i]['images']['fixed_height']['url'].toString());
-          }
-          this.gifList = _gifList.toSet().toList();
-        });
-      }
+      setState(() {
+        var mapData = map['data'];
+        List _gifList = [];
+        for (int i=0; i < mapData.length; i++) {
+          _gifList.add(mapData[i]['images']['fixed_height']['url'].toString());
+        }
+        this.gifList = _gifList.toSet().toList();
+      });
     } else {
       print('Failed to connect');
     }
@@ -99,7 +81,6 @@ class HomePageState extends State<HomePage> {
       setState(() {
         _numberOfGifs += 4;
         _fetchData(_myController.text, _numberOfGifs);
-        this.gifList = gifList.toSet().toList();
       });
     }
     });
@@ -122,7 +103,7 @@ class HomePageState extends State<HomePage> {
               padding: EdgeInsets.only(),
               child: TextField(
                 controller: _myController,
-                style: TextStyle(fontSize: 18.0),
+                style: TextStyle(fontSize: 18.0, color:yellowColor),
                 decoration: InputDecoration(hintText: "Найти гифку"),
               )),
           actions: <Widget>[
@@ -133,7 +114,7 @@ class HomePageState extends State<HomePage> {
                 child: FlatButton( 
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[Icon(Icons.star, color: yellowColor), Text('${favouriteGifsList.length}', style:TextStyle(color: yellowColor, fontSize: 12.0))]),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => FavouritesFolder()
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FavouritesFolder(favouriteGifsList, yellowColor, greenColor, blackColor)
                       ));
                     }))
           ],
@@ -145,34 +126,33 @@ class HomePageState extends State<HomePage> {
     return Center(child:Text("Здесь пока ничего нет", style:TextStyle(color:yellowColor)));
   }
 
-  Widget listOfGifs() {
+  listOfGifs() {
     return GridView.count( // Две колонки с гифками
-          controller: _scrollController,
-          crossAxisCount: 2,
-          children: List.generate(this.gifList != null ? this.gifList.length : 0, 
-           (index) {
-            String gifUrl = gifList[index];
-            return Stack(alignment: AlignmentDirectional.center, children: <Widget>[Container(child:Stack(alignment: AlignmentDirectional.topEnd, children: <Widget>[
-              FadeInImage.assetNetwork(placeholder:'assets/giphy.gif', image:gifUrl),
-              ClipRRect(borderRadius: BorderRadius.circular(30.0),
-                child: Container(
-                  width: 50.0,
-                  height: 50.0,
-                  child: FlatButton(
-                    padding: EdgeInsets.only(),
-                      child: (favouriteGifsList.contains(gifUrl) == false) ? Icon(Icons.star, size:30, color: Colors.grey[50]) : Icon(Icons.star, size:30, color: Colors.yellow), // если гифка(а точнее ссылка на гифку) в favouriteGifsList => закрась ее желтым, в проивном случае => не закрашивай
-                      onPressed: () {
-                        setState(() {
-                          if (favouriteGifsList.contains(gifUrl) == true) {
-                            favouriteGifsList.remove(gifUrl);
-                          } else {
-                            favouriteGifsList.add(gifUrl);
-                          }
-                        });
-                      })))]), 
-                      decoration:BoxDecoration(border: Border.all(width: 1.0, color:Colors.black))),]);
-          }),
-        );
+        controller: _scrollController,
+        crossAxisCount: 2,
+        children: List.generate(this.gifList != null ? this.gifList.length : 0, 
+        (index) {
+          return Stack(alignment: AlignmentDirectional.center, children: <Widget>[Container(child:Stack(alignment: AlignmentDirectional.topEnd, children: <Widget>[
+            FadeInImage.assetNetwork(placeholder:'assets/giphy.gif', image:gifList[index]),
+            ClipRRect(borderRadius: BorderRadius.circular(30.0),
+              child: Container(
+                width: 50.0,
+                height: 50.0,
+                child: FlatButton(
+                  padding: EdgeInsets.only(),
+                    child: (favouriteGifsList.contains(gifList[index]) == true) ? Icon(Icons.star, size:30, color: Colors.yellow) :  Icon(Icons.star, size:30, color: Colors.grey[50]), // если гифка(а точнее ссылка на гифку) в favouriteGifsList => закрась ее желтым, в проивном случае => не закрашивай
+                    onPressed: () {
+                      setState(() {
+                        if (favouriteGifsList.contains(gifList[index]) == true) {
+                          favouriteGifsList.remove(gifList[index]);
+                        } else {
+                          favouriteGifsList.add(gifList[index]);
+                        }
+                      });
+                    })))]), 
+                    decoration:BoxDecoration(border: Border.all(width: 1.0, color:Colors.black))),]);
+        }),
+      );
   }
 
 
