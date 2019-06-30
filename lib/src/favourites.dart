@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 
 class FavouritesFolder extends StatefulWidget {
-  final _favouriteGifsList;
-  final yellowColor;
-  final greenColor;
-  final blackColor;
 
-  FavouritesFolder(this._favouriteGifsList, this.yellowColor, this.greenColor, this.blackColor);
   @override
     State<StatefulWidget> createState() {
       return FavouritesFolderState();
@@ -15,38 +10,25 @@ class FavouritesFolder extends StatefulWidget {
 }
 
 class FavouritesFolderState extends State<FavouritesFolder> {
-  List _favouriteGifsList;
-  Color yellowColor;
-  Color greenColor;
-  Color blackColor;
-
-  @override
-  void initState() {
-    _favouriteGifsList = widget._favouriteGifsList;
-    yellowColor = widget.yellowColor;
-    greenColor = widget.greenColor;
-    blackColor = widget.blackColor;
-    super.initState();
-  }
 
   @override
     Widget build(BuildContext context) {
       return Scaffold(
-          backgroundColor: blackColor,
+          backgroundColor: key.currentState.blackColor,
           appBar: AppBar(
-            iconTheme: IconThemeData(color:yellowColor),
-            backgroundColor: greenColor,
-            title:Text("Избранные гифки: ${_favouriteGifsList.length}", style: TextStyle(color: yellowColor),)),
-            body: _favouriteGifsList.length == 0 ? Center(child:Text("В этой папке пусто", style:TextStyle(color:yellowColor))) : favouritesBody() );
+            iconTheme: IconThemeData(color:key.currentState.yellowColor),
+            backgroundColor: key.currentState.greenColor,
+            title:Text("Избранные гифки: ${key.currentState.favouriteGifsList.length}", style: TextStyle(color: key.currentState.yellowColor),)),
+            body: key.currentState.favouriteGifsList.length == 0 ? Center(child:Text("В этой папке пусто", style:TextStyle(color:key.currentState.yellowColor))) : favouritesBody() );
     }
 
     Widget favouritesBody() {
       return GridView.count(
           crossAxisCount: 2,
-          children: List.generate(_favouriteGifsList != null ? _favouriteGifsList.length : 0, // Две колонки с "Избранными гифками"
+          children: List.generate(key.currentState.favouriteGifsList != null ? key.currentState.favouriteGifsList.length : 0, // Две колонки с "Избранными гифками"
            (index) {
             return Stack(alignment: AlignmentDirectional.center, children: <Widget>[Container(child:Stack(alignment: AlignmentDirectional.topEnd, children: <Widget>[
-              Image.network(_favouriteGifsList[index]),
+              Image.network(key.currentState.favouriteGifsList[index]),
               ClipRRect(borderRadius: BorderRadius.circular(30.0),
                 child: Container(
                   width: 50.0,
@@ -56,7 +38,7 @@ class FavouritesFolderState extends State<FavouritesFolder> {
                       child: Icon(Icons.clear,size:35.0, color: Colors.red),
                       onPressed: () {
                         setState(() {
-                          key.currentState.favouriteGifsList.remove(_favouriteGifsList[index]);
+                          key.currentState.favouriteGifsList.remove(key.currentState.favouriteGifsList[index]);
                         });
                       })))]), 
                       decoration:BoxDecoration(border: Border.all(width: 1.0, color:Colors.black))),]);

@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   var gifList = [];
-  int _numberOfGifs = 8;
+  int _numberOfGifs = 6;
   List favouriteGifsList = [];
 
   Color yellowColor = Color(0xfffaf4c4);
@@ -46,7 +46,7 @@ class HomePageState extends State<HomePage> {
       var mapData = map['data'];
       List _gifList = [];
       for (int i=0; i < mapData.length; i++) {
-        _gifList.add('https://media0.giphy.com/media/'+mapData[i]['id'].toString()+'/200.gif');
+        _gifList.add('https://media1.giphy.com/media/'+mapData[i]['id'].toString()+'/200.gif');
       }
       setState(() {
         this.gifList = _gifList;
@@ -59,13 +59,13 @@ class HomePageState extends State<HomePage> {
   final _myController = TextEditingController();
   ScrollController _scrollController = ScrollController();
   Timer _timer;
-
+  
   _textListener() {
-    var customText = _myController.text.replaceAll(' ', '+');
+    String customText = _myController.text.replaceAll(' ', '+');
     customText = customText.toLowerCase();
     _timer = Timer(const Duration(milliseconds: 2000), () { // функция setState() срабатывает через 2 секунды после того как изменился _myController.text
       setState(() {
-        _numberOfGifs = 8;
+        _numberOfGifs = 6;
         this.gifList = [];
         _fetchData(customText, _numberOfGifs);
         });
@@ -103,13 +103,21 @@ class HomePageState extends State<HomePage> {
       backgroundColor: blackColor,
         appBar: AppBar(
           backgroundColor: greenColor,
-          title: Padding(
-              padding: EdgeInsets.only(),
-              child: TextField(
+          title: TextField(
                 controller: _myController,
                 style: TextStyle(fontSize: 18.0, color:yellowColor),
-                decoration: InputDecoration(hintText: "Найти гифку"),
-              )),
+                decoration: InputDecoration(hintText: "Найти гифку", suffixIcon: ClipRRect( borderRadius: BorderRadius.circular(30.0),
+              child: Container(
+                width: 40.0,
+                height: 40.0,
+                child: FlatButton(
+                  padding: EdgeInsets.only(),
+                    child: Icon(Icons.clear, color: Colors.red),
+                    onPressed: () {
+                      _myController.text = "";
+                    }))
+                    )),
+              ),
           actions: <Widget>[
              Container(
               color: Color(0xff58a27f),
@@ -118,7 +126,7 @@ class HomePageState extends State<HomePage> {
                 child: FlatButton( 
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[Icon(Icons.star, color: yellowColor), Text('${favouriteGifsList.length}', style:TextStyle(color: yellowColor, fontSize: 12.0))]),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => FavouritesFolder(favouriteGifsList, yellowColor, greenColor, blackColor)
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FavouritesFolder()
                       ));
                     }))
           ],
@@ -161,3 +169,4 @@ class HomePageState extends State<HomePage> {
 
 
 }
+
