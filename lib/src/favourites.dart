@@ -34,7 +34,7 @@ class FavouritesFolderState extends State<FavouritesFolder> {
       return Scaffold(
           backgroundColor: blackColor,
           appBar: AppBar(
-            iconTheme: IconThemeData(color:blackColor),
+            iconTheme: IconThemeData(color:yellowColor),
             backgroundColor: greenColor,
             title:Text("Избранные гифки: ${_favouriteGifsList.length}", style: TextStyle(color: yellowColor),)),
             body: _favouriteGifsList.length == 0 ? Center(child:Text("В этой папке пусто", style:TextStyle(color:yellowColor))) : favouritesBody() );

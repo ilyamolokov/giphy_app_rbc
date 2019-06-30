@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   var gifList = [];
-  int _numberOfGifs = 6;
+  int _numberOfGifs = 8;
   List favouriteGifsList = [];
 
   Color yellowColor = Color(0xfffaf4c4);
@@ -43,17 +43,13 @@ class HomePageState extends State<HomePage> {
 
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
+      var mapData = map['data'];
+      List _gifList = [];
+      for (int i=0; i < mapData.length; i++) {
+        _gifList.add('https://media0.giphy.com/media/'+mapData[i]['id'].toString()+'/200.gif');
+      }
       setState(() {
-        var mapData = map['data'];
-        List _gifList = [];
-        for (int i=0; i < mapData.length; i++) {
-          _gifList.add('https://media0.giphy.com/media/'+mapData[i]['id'].toString()+'/200.gif');
-        }
-        // for (int i=0; i < _gifList.length; i++) {
-        //   int mediaIndex = _gifList[i].indexOf('media');
-        //   _gifList[i] = _gifList[i].replaceRange(mediaIndex, mediaIndex+7, 'media0.');
-        // }
-        this.gifList = _gifList;//.toSet().toList();
+        this.gifList = _gifList;
       });
     } else {
       print('Failed to connect');
@@ -69,29 +65,33 @@ class HomePageState extends State<HomePage> {
     customText = customText.toLowerCase();
     _timer = Timer(const Duration(milliseconds: 2000), () { // функция setState() срабатывает через 2 секунды после того как изменился _myController.text
       setState(() {
-        _numberOfGifs = 6;
+        _numberOfGifs = 8;
         this.gifList = [];
         _fetchData(customText, _numberOfGifs);
-      });
+        });
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _myController.addListener(_textListener);
-    _scrollController.addListener(() {
+  _scrollControllerListener() {
+    FocusScope.of(context).requestFocus(FocusNode()); // Когда прокручиваем гифки, мы "выходим" из TextField'а и убираем клавиатуру
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       setState(() {
         _numberOfGifs += 4;
         _fetchData(_myController.text, _numberOfGifs);
       });
     }
-    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _myController.addListener(_textListener);
+    _scrollController.addListener(_scrollControllerListener);
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _myController.dispose();
     super.dispose();
     _timer.cancel();
@@ -132,13 +132,10 @@ class HomePageState extends State<HomePage> {
 
   listOfGifs() {
     return GridView.count( // Две колонки с гифками
-        controller: _scrollController,
+      controller: _scrollController,
         crossAxisCount: 2,
         children: List.generate(this.gifList != null ? this.gifList.length : 0, 
         (index) {
-          print('${gifList[index]} is favourite: ${favouriteGifsList.contains(gifList[index])}');
-          print('$favouriteGifsList');
-
           return Stack(alignment: AlignmentDirectional.center, children: <Widget>[Container(child:Stack(alignment: AlignmentDirectional.topEnd, children: <Widget>[
             FadeInImage.assetNetwork(placeholder:'assets/giphy.gif', image:gifList[index]),
             ClipRRect(borderRadius: BorderRadius.circular(30.0),
